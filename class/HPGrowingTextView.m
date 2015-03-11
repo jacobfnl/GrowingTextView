@@ -151,6 +151,8 @@
 
 -(CGSize)sizeThatFits:(CGSize)size
 {
+	// jacobfnl: the size was coming out a little shy of necessary.
+	size.height = [internalTextView sizeThatFits:size].height;
     if (self.text.length == 0) {
         size.height = minHeight;
     }
@@ -292,7 +294,7 @@
 - (void)refreshHeight
 {
 	//size of content, so we can set the frame of self
-	NSInteger newSizeH = [self measureHeight];
+	CGFloat newSizeH = [self measureHeight];
 	if (newSizeH < minHeight || !internalTextView.hasText) {
         newSizeH = minHeight; //not smalles than minHeight
     }
@@ -332,7 +334,7 @@
                                          [self resizeTextView:newSizeH];
                                      } 
                                      completion:^(BOOL finished) {
-                                         if ([delegate respondsToSelector:@selector(growingTextView:didChangeHeight:)]) {
+                                         if ([self.delegate respondsToSelector:@selector(growingTextView:didChangeHeight:)]) {
                                              [delegate growingTextView:self didChangeHeight:newSizeH];
                                          }
                                      }];

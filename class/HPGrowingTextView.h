@@ -69,7 +69,6 @@
     NSTimeInterval animationDuration;
 	
 	//uitextview properties
-	NSObject <HPGrowingTextViewDelegate> *__unsafe_unretained delegate;
 	NSTextAlignment textAlignment;
 	NSRange selectedRange;
 	BOOL editable;
@@ -97,7 +96,8 @@
 // --------
 
 //uitextview properties
-@property(unsafe_unretained) NSObject<HPGrowingTextViewDelegate> *delegate;
+// jacobfnl: the former delegate pointer resulted in some crashes in my usage. This is safer.
+@property(nonatomic,weak) NSObject <HPGrowingTextViewDelegate> *delegate;
 @property(nonatomic,strong) NSString *text;
 @property(nonatomic,strong) UIFont *font;
 @property(nonatomic,strong) UIColor *textColor;
