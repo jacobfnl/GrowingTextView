@@ -89,8 +89,12 @@
 @property NSTimeInterval animationDuration;
 @property (nonatomic, strong) NSString *placeholder;
 @property (nonatomic, strong) UIColor *placeholderColor;
-@property (nonatomic, strong) UITextView *internalTextView;	
+@property (nonatomic, strong) UITextView *internalTextView;
 
+// jacobfnl: need bordered input style background as standard option while editing text
+@property (nonatomic, strong) UIImageView *bgView; // bg for background
+@property (nonatomic) BOOL showsBackground;
+// --------
 
 //uitextview properties
 @property(unsafe_unretained) NSObject<HPGrowingTextViewDelegate> *delegate;

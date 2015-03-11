@@ -88,6 +88,19 @@
     CGRect r = self.frame;
     r.origin.y = 0;
     r.origin.x = 0;
+	
+	// ---------
+	// jacobfnl: all of my uses of this textview require an border styled to be a text-input area
+	// textArea.png is the graphic created for the standard background.
+	// the background image, bgView, is publicly accessible for alternate screens
+	UIImage *rawImage = [UIImage imageNamed:@"textArea.png"]; // @2x included.
+	UIImage *resizeIm = [rawImage stretchableImageWithLeftCapWidth:7 topCapHeight:7];
+	_bgView = [[UIImageView alloc] initWithImage:resizeIm];
+	[_bgView setFrame:r];
+	[_bgView setAutoresizingMask:(UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth)];
+	[self addSubview:_bgView];
+	// ---------
+	
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
     internalTextView = [[HPTextViewInternal alloc] initWithFrame:r textContainer:textContainer];
 #else
@@ -95,7 +108,7 @@
 #endif
     internalTextView.delegate = self;
     internalTextView.scrollEnabled = NO;
-    internalTextView.font = [UIFont fontWithName:@"Helvetica" size:13]; 
+    internalTextView.font = [UIFont systemFontOfSize:15.0]; // jf - use the standard font
     internalTextView.contentInset = UIEdgeInsetsZero;		
     internalTextView.showsHorizontalScrollIndicator = NO;
     internalTextView.text = @"-";
@@ -114,7 +127,27 @@
 
     [self setPlaceholderColor:[UIColor lightGrayColor]];
     internalTextView.displayPlaceHolder = YES;
+	
+	// ---------
+	// generally we don't want the background to show unless editing.
+	self.showsBackground = NO;
+	self.clipsToBounds = NO;
+	self.internalTextView.clipsToBounds = NO;
+	
 }
+
+// ---------
+// jacobfnl: should the background be showing full time or just while editing?
+- (void)setShowsBackground:(BOOL)showsBackground
+{
+	_showsBackground = showsBackground;
+	if (!showsBackground && ![self isFirstResponder]) {
+		[self.bgView setHidden:YES];
+	} else {
+		[self.bgView setHidden:NO];
+	}
+}
+// --------
 
 -(CGSize)sizeThatFits:(CGSize)size
 {
@@ -591,6 +624,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+	// unhide the input border.
+	[self.bgView setHidden:NO];
+	//
 	if ([delegate respondsToSelector:@selector(growingTextViewShouldBeginEditing:)]) {
 		return [delegate growingTextViewShouldBeginEditing:self];
 		
@@ -620,7 +656,12 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)textViewDidEndEditing:(UITextView *)textView {		
+- (void)textViewDidEndEditing:(UITextView *)textView {
+	// hide the background if we are just showing it while editing.
+	if (!self.showsBackground) {
+		[self.bgView setHidden:YES];
+	}
+	
 	if ([delegate respondsToSelector:@selector(growingTextViewDidEndEditing:)]) {
 		[delegate growingTextViewDidEndEditing:self];
 	}
