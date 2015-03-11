@@ -675,6 +675,12 @@
 	//weird 1 pixel bug when clicking backspace when textView is empty
 	if(![textView hasText] && [atext isEqualToString:@""]) return NO;
 	
+	// jacobfnl: finding that sometimes when pasting in text it isn't resizing properly. this is clearly a hack.
+	if (atext.length > 127){
+		NSNumber *rangeLocation = [NSNumber numberWithUnsignedInteger:(range.location + atext.length -1)];
+		[self performSelector:@selector(resizeTextAfterPasteWithRangeLocation:) withObject:rangeLocation afterDelay:.12];
+	}
+	
 	//Added by bretdabaker: sometimes we want to handle this ourselves
     	if ([delegate respondsToSelector:@selector(growingTextView:shouldChangeTextInRange:replacementText:)])
         	return [delegate growingTextView:self shouldChangeTextInRange:range replacementText:atext];
@@ -702,6 +708,14 @@
 	}
 }
 
+
+- (void)resizeTextAfterPasteWithRangeLocation:(NSNumber*)rangeLocation {
+	NSRange startRange = NSMakeRange(0, rangeLocation.unsignedIntegerValue-1);
+	NSString *prompt = [self.internalTextView.text substringWithRange:startRange];
+	NSString *fullText = self.internalTextView.text.copy;
+	[self setText:prompt];
+	[self setText:fullText];
+}
 
 
 @end
