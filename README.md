@@ -1,9 +1,9 @@
+This fork of HPGrowingTextView adds a border background that may be configured to show either full time or only while one is editing text.
+
 HPGrowingTextView
 =================
 
-Multi-line/Autoresizing UITextView similar as in the SMS-app. The example project mimicks the look of Apple's SMS-app.
-
-![Screenshot](http://f.cl.ly/items/270f2F3q3d3q142m140A/ss.png)
+Multi-line/Autoresizing UITextView. As more text is input, it expands and contracts to accomodate additional lines.
 
 Properties
 ----------
