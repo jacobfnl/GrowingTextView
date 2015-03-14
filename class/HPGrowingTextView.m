@@ -719,5 +719,16 @@
 	[self setText:fullText];
 }
 
+- (void)setFrame:(CGRect)frame
+{
+	// jacobfnl: simplifying reuse of the growingTextView instances by
+	// forcing internalTextView frame to conform to this frame.
+	[super setFrame:frame];
+	CGRect r = self.bounds;
+	r.origin.y = contentInset.top - contentInset.bottom;
+	r.origin.x = contentInset.left;
+	r.size.width -= contentInset.left + contentInset.right;
+	[self.internalTextView setFrame:r];
+}
 
 @end
